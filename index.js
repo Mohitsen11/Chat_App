@@ -14,13 +14,15 @@ const PORT = process.env.PORT;
 io.on('connection', (socket) => {
     console.log('a user connected', socket.id);
 
-    socket.on('from_client', () => {
-        console.log('Event coming form client');
-    })
+    socket.on('send_msg', (data) => {
+        console.log(data);
+        
+        // io.emit('msg_received', data); it emits the event to all the connections who are connected with websocket server
 
-    setInterval(() => {
-        socket.emit('from_server');
-    }, 2000);
+        // socket.emit('msg_received', data); it emits the event to the websocket connection who first published the event to server
+
+        socket.broadcast.emit('msg_received', data);
+    })
 })
 
 app.use('/', express.static(__dirname + '/public'));
